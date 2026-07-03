@@ -46,12 +46,21 @@ app.post('/api/auth/login', (req, res) => {
 // API REST (protegida — precisa de token)
 app.use('/api', requireAuth, routes);
 
-// Dashboard estático
-app.use(express.static(path.join(__dirname, '../dashboard/public')));
-// Fallback pra qualquer rota não encontrada (SPA) — usa middleware em vez de
-// padrão de rota '*', que quebrou em versões mais novas do path-to-regexp
+// Dashboard estático (opcional — se a pasta dashboard/public não existir
+// aqui, sem problema, o painel pode estar hospedado em outro lugar como
+// GitHub Pages; esse backend só precisa responder a API e o webhook)
+const fs = require('fs');
+const dashboardPath = path.join(__dirname, '../dashboard/public');
+const dashboardIndex = path.join(dashboardPath, 'index.html');
+if (fs.existsSync(dashboardPath)) {
+  app.use(express.static(dashboardPath));
+}
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../dashboard/public/index.html'));
+  if (fs.existsSync(dashboardIndex)) {
+    res.sendFile(dashboardIndex);
+  } else {
+    res.status(200).send('PlanejaIA backend rodando. O painel é servido separadamente.');
+  }
 });
 
 const PORT = process.env.PORT || 3000;
