@@ -76,7 +76,8 @@ async function handleWebhook(body) {
     try {
       const audioBuffer = await downloadMedia(messageId, 'audioMessage');
       text = await transcribeAudio(audioBuffer);
-    } catch {
+    } catch (e) {
+      console.error('Erro ao transcrever áudio:', e.message);
       await sendText(phone, 'Não consegui ouvir o áudio 😅 Tenta me mandar em texto?');
       return;
     }
