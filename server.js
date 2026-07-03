@@ -50,7 +50,7 @@ app.use('/api', requireAuth, routes);
 // aqui, sem problema, o painel pode estar hospedado em outro lugar como
 // GitHub Pages; esse backend só precisa responder a API e o webhook)
 const fs = require('fs');
-const dashboardPath = path.join(__dirname, '../dashboard/public');
+const dashboardPath = path.join(__dirname, 'dashboard/public');
 const dashboardIndex = path.join(dashboardPath, 'index.html');
 if (fs.existsSync(dashboardPath)) {
   app.use(express.static(dashboardPath));
