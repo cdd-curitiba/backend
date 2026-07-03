@@ -90,7 +90,7 @@ async function handleWebhook(body) {
       const base64 = imgBuffer.toString('base64');
       const { GoogleGenerativeAI } = require('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
       const result = await model.generateContent([
         { text: `Você é um assistente financeiro. Analise essa nota fiscal ou extrato e extraia os lançamentos. Responda APENAS com JSON: { "items": [{ "description": "...", "amount": 0.00, "category": "..." }], "total": 0.00, "date": "YYYY-MM-DD" }. Se não for nota fiscal, retorne { "items": [], "total": 0, "date": "" }` },
         { inlineData: { mimeType: 'image/jpeg', data: base64 } }
