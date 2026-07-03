@@ -20,7 +20,7 @@ Exemplos de tom:
 `;
 
 async function interpretMessage(text, userCategories = [], userStats = null, userAccounts = [], userCards = []) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
 
   const categoryList = userCategories.length > 0
     ? `Categorias disponíveis: ${userCategories.join(', ')}.`
@@ -99,7 +99,7 @@ Se não entendeu:
 }
 
 async function generateReport(userStats) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
 
   const prompt = `
 ${PERSONALITY}
