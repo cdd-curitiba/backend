@@ -1,27 +1,21 @@
-const axios = require('axios');
-const FormData = require('form-data');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// Transcreve áudio usando o Gemini (multimodal) em vez da API paga da OpenAI
+// (Whisper). Usa a mesma GEMINI_API_KEY que já está configurada pro resto
+// do bot, então não precisa de crédito/conta separada.
 async function transcribeAudio(audioBuffer, mimeType = 'audio/ogg') {
-  const form = new FormData();
-  form.append('file', audioBuffer, {
-    filename: 'audio.ogg',
-    contentType: mimeType,
-  });
-  form.append('model', 'whisper-1');
-  form.append('language', 'pt');
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-  const response = await axios.post(
-    'https://api.openai.com/v1/audio/transcriptions',
-    form,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        ...form.getHeaders(),
-      },
-    }
-  );
+  const base64 = audioBuffer.toString('base64');
 
-  return response.data.text;
+  const result = await model.generateContent([
+    { text: 'Transcreva o áudio a seguir literalmente, em português. Responda APENAS com o texto transcrito, sem comentários, sem aspas, sem formatação adicional.' },
+    { inlineData: { mimeType, data: base64 } },
+  ]);
+
+  return result.response.text().trim();
 }
 
 module.exports = { transcribeAudio };
